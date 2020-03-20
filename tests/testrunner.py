@@ -34,30 +34,17 @@ def read_expectations(filename):
         tests.append({"input": test, "expected": results, "features": features})
   return featurecode, tests, settings
 
-def create_cached_font(featurecode):
-  try:
-    with open(mydir+"/fontcache.json", 'r') as f:
-      cache = json.load(f)
-  except (IOError, ValueError):
-      cache = {}
-
-  if featurecode not in cache:
-    print("Building font...")
-    font = TTFont(mydir+"/FallbackPlus-Regular.otf")
-    addOpenTypeFeaturesFromString(font, featurecode)
-    _,tmp = tempfile.mkstemp(suffix=".otf")
-    font.save(tmp)
-    cache[featurecode] = tmp
-    json.dump(cache, open(mydir+"/fontcache.json", 'w'))
-
-  return namvezvez.Font(cache[featurecode])
+def create_font(featurecode):
+  font = TTFont(mydir+"/FallbackPlus-Regular.otf")
+  addOpenTypeFeaturesFromString(font, featurecode)
+  return namvezvez.Font(font)
 
 class TestRunner(unittest.TestCase):
   def test(self):
     for testfile in glob.glob(mydir+"/*.test"):
       print("Running "+os.path.basename(testfile))
       featurecode, tests, settings = read_expectations(testfile)
-      font = create_cached_font(featurecode)
+      font = create_font(featurecode)
       for t in tests:
         plan = namvezvez.Plan(font,
                              settings["direction"],
