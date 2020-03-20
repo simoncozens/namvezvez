@@ -1,0 +1,9 @@
+	feature x {
+
+	} x;
+# Indented lines are features
+# Comments are like this
+# Settings have an equals
+direction=LTR
+# Tests have a colon
+abc:uni0061|uni0062|uni0063
