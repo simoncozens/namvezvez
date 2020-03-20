@@ -2,7 +2,7 @@ class BaseShaper():
   def __init__(self, plan, font, buf, features = []):
     self.plan = plan
     self.font = font
-    self.buffer =  buf
+    self.buffer = buf
     self.features = features
 
   def shape(self):
@@ -22,6 +22,7 @@ class BaseShaper():
 
   def preprocess_text(self):
     pass
+
   def postprocess_glyphs(self):
     pass
 

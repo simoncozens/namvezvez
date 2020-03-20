@@ -1,3 +1,7 @@
+class BufferInfo(object):
+  def __init__(self, d):
+      self.__dict__ = d
+
 class Buffer():
   def __init__(self, characters):
     self.characters = characters
@@ -5,13 +9,13 @@ class Buffer():
   def normalize_to_glyphs(self, font):
     cmap = font.mapping
     self.info = [
-      {
+      BufferInfo({
         "position": i,
         "original": x,
         "codepoint": ord(x),
         "glyph": cmap[ord(x)],
         "mask": 0
-      }
+      })
 
       for i,x in enumerate(self.characters)
     ]
@@ -37,6 +41,6 @@ class Buffer():
 
   def as_debug_string(self):
     if hasattr(self, "info"):
-      return "|".join([x["glyph"] for x in self.info])
+      return "|".join([x.glyph for x in self.info])
     else:
       return self.characters

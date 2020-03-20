@@ -1,9 +1,11 @@
-	feature x {
-
-	} x;
+	feature dlig {
+		sub uni0064 by uni0065;
+	} dlig;
 # Indented lines are features
 # Comments are like this
 # Settings have an equals
 direction=LTR
 # Tests have a colon
 abc:uni0061|uni0062|uni0063
+abd:uni0061|uni0062|uni0064
+[+dlig]abd:uni0061|uni0062|uni0065

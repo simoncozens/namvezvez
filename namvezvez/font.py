@@ -1,14 +1,15 @@
 from fontTools.misc.py23 import *
 from fontTools.ttLib import TTFont
 from collections import OrderedDict
-
+from namvezvez.lookup import wrapFonttoolsLU
 class GTable:
   def __init__(self, table):
     self.table = table
     self.scripts = {scriptRecord.ScriptTag: scriptRecord for scriptRecord in self.table.ScriptList.ScriptRecord}
 
   def getLookup(self,ix):
-    return self.table.LookupList.Lookup[ix]
+    fontToolsLookup = self.table.LookupList.Lookup[ix]
+    return wrapFonttoolsLU(fontToolsLookup, self.table)
 
   def getLookups(self,feature,script,lang):
     script = self.scripts.get(script, self.scripts["DFLT"])

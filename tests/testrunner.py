@@ -4,18 +4,15 @@ mydir = os.path.dirname(os.path.abspath(__file__))
 from fontTools.feaLib.builder import addOpenTypeFeaturesFromString
 from fontTools.ttLib import TTFont
 import namvezvez
-import json, tempfile
-import unittest
-import glob
+import json, tempfile, re, glob, unittest
 
 def read_expectations(filename):
   featurecode = ""
   tests = []
   settings = {
     "direction": "LTR",
-    "script": "latn",
-    "language": 'ENG',
-    "features": ""
+    "script": "Latn",
+    "language": 'ENG'
   }
   with open(filename) as file_in:
     for line in file_in:
@@ -29,7 +26,12 @@ def read_expectations(filename):
         settings[key] = val
       elif ":" in line:
         test, results = line.split(":")
-        tests.append({"input": test, "expected": results})
+        features = ""
+        if test.startswith("["):
+          m = re.match("\[([^]]+)\](.*)", test)
+          features = m[1]
+          test = m[2]
+        tests.append({"input": test, "expected": results, "features": features})
   return featurecode, tests, settings
 
 def create_cached_font(featurecode):
@@ -52,14 +54,15 @@ def create_cached_font(featurecode):
 class TestRunner(unittest.TestCase):
   def test(self):
     for testfile in glob.glob(mydir+"/*.test"):
-      print("Running "+testfile)
+      print("Running "+os.path.basename(testfile))
       featurecode, tests, settings = read_expectations(testfile)
       font = create_cached_font(featurecode)
-      plan = namvezvez.Plan(font,
-                           settings["direction"],
-                           settings["script"],
-                           settings["language"])
       for t in tests:
+        plan = namvezvez.Plan(font,
+                             settings["direction"],
+                             settings["script"],
+                             settings["language"],
+                             t["features"])
         out = plan.execute(t["input"]).as_debug_string()
         self.assertEqual(t["expected"], out)
 
