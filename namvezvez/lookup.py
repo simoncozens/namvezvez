@@ -5,6 +5,7 @@ class BaseLookup:
     self.l = fonttoolsLookup
     self.forwards = True
     self.coverage = self.get_coverage()
+    self.ignoremarks = False
 
   def get_coverage(self):
     return []
@@ -19,15 +20,32 @@ class BaseLookup:
     for ix,inf in enumerate(buf.info):
       preLU  = self.gather_precontext()
       if len(preLU) > 0:
-        preBuf = self.gather_buffer_precontext(buf, ix)
-        if not self.compare_context(preLu, preBuf): continue
+        if not self.compare_buffer_precontext(buf,ix, preLU): continue
       postLU  = self.gather_postcontext()
       if len(postLU) > 0:
-        postBuf = self.gather_buffer_postcontext(buf, ix)
-        if not self.compare_context(postLu, postBuf): continue
+        if not self.compare_buffer_postcontext(buf, ix, postLU): continue
       if not (inf.glyph in self.coverage):
         continue
       self.apply_to_context(buf, ix)
+
+  def compare_buffer_postcontext(self, buf, ix, postLU):
+    pos = 0
+    mypostLU = list(postLU)
+    while len(mypostLU) > 0:
+      pos = pos + 1
+      if ix+pos > len(buf.info)-1: return False
+
+      # if self.ignoremarks and mypostLU[0].isMark:
+      #   mypostLU.pop(0)
+      if self.ignoremarks and buf.info[ix+pos].isMark:
+        continue
+      if isinstance(mypostLU[0], str):
+        if not (mypostLU[0] == buf.info[ix+pos].glyph):
+          return False
+      else: # Array?
+        if not (buf.info[ix+pos].glyph in mypostLU[0]): return False
+      mypostLU.pop(0)
+    return True
 
 class SingleSubst(BaseLookup):
   def get_coverage(self):
@@ -41,11 +59,29 @@ class SingleSubst(BaseLookup):
       if buf.info[ix].glyph in sub.mapping:
         buf.info[ix].glyph = sub.mapping[buf.info[ix].glyph]
 
+class LigatureSubst(BaseLookup):
+  def get_coverage(self):
+    coverage = []
+    for sub in self.l.SubTable:
+      coverage.extend(sub.ligatures.keys())
+    return coverage
+
+  def apply_to_context(self, buf, ix):
+    for sub in self.l.SubTable:
+      for first, ligatures in sub.ligatures.items():
+        pos = ix
+        for lig in ligatures:
+          postLU = lig.Component
+          if not self.compare_buffer_postcontext(buf, ix, postLU):
+            continue
+          buf.info[ix].glyph = lig.LigGlyph
+          del(buf.info[ix+1:ix+len(postLU)+1])
+
 gsubClass = {
   1: SingleSubst,
   # 2: MultipleSubst,
   # 3: AlternateSubst,
-  # 4: LigatureSubst,
+  4: LigatureSubst,
   # 5: ContextSubst,
   # 6: ChainContextSubst,
   # 7: ExtensionSubst,

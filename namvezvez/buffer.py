@@ -14,6 +14,7 @@ class Buffer():
         "original": x,
         "codepoint": ord(x),
         "glyph": cmap[ord(x)],
+        "isMark": False,
         "mask": 0
       })
 

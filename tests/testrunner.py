@@ -42,6 +42,7 @@ def create_cached_font(featurecode):
       cache = {}
 
   if featurecode not in cache:
+    print("Building font...")
     font = TTFont(mydir+"/FallbackPlus-Regular.otf")
     addOpenTypeFeaturesFromString(font, featurecode)
     _,tmp = tempfile.mkstemp(suffix=".otf")

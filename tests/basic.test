@@ -1,5 +1,7 @@
 	feature dlig {
 		sub uni0064 by uni0065;
+		sub uni0066 uni0069 by glyph01;
+		sub uni0079 [uni0077 uni0078] by glyph02;
 	} dlig;
 # Indented lines are features
 # Comments are like this
@@ -9,3 +11,5 @@ direction=LTR
 abc:uni0061|uni0062|uni0063
 abd:uni0061|uni0062|uni0064
 [+dlig]abd:uni0061|uni0062|uni0065
+[+dlig]ffiafi:uni0066|glyph01|uni0061|glyph01
+[+dlig]ywyxyz:glyph02|glyph02|uni0079|uni007A
