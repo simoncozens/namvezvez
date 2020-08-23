@@ -5,7 +5,7 @@ class BaseLookup:
     self.l = fonttoolsLookup
     self.forwards = True
     self.coverage = self.get_coverage()
-    self.ignoremarks = False
+    self.ignoremarks = self.l.LookupFlag & 0x8
 
   def get_coverage(self):
     return []

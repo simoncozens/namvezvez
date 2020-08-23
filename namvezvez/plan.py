@@ -22,6 +22,7 @@ class Plan:
 
   def execute(self, chars, features=[]):
     buf = namvezvez.Buffer(chars)
+    buf.normalize_to_glyphs(self.font)
     self.collect_features()
     shaper = self.shaper(self,self.font,buf,features)
     shaper.shape()

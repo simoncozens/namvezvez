@@ -45,10 +45,13 @@ class BaseShaper():
   def set_glyph_props(self):
     if "GDEF" in self.font.font:
       gdef = self.font.font["GDEF"].table
-      for x in self.buf.info:
-        x["props"] = get_glyph_props(gdef, x) # XXX
+      classdefs = gdef.GlyphClassDef.classDefs
+      for x in self.buffer.info:
+        if x.glyph in classdefs:
+          x.isMark = classdefs[x.glyph] == 3
+        # x["props"] = get_glyph_props(gdef, x) # XXX
         # clear lig props
-      x["syllable"] = None
+        # x.syllable = None
 
   def position(self):
     pass

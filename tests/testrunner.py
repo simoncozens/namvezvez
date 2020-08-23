@@ -44,7 +44,10 @@ class TestRunner(unittest.TestCase):
     for testfile in glob.glob(mydir+"/*.test"):
       print("Running "+os.path.basename(testfile))
       featurecode, tests, settings = read_expectations(testfile)
-      font = create_font(featurecode)
+      if "font" in settings:
+        font = namvevez.Font(settings["font"])
+      else:
+        font = create_font(featurecode)
       for t in tests:
         plan = namvezvez.Plan(font,
                              settings["direction"],

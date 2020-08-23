@@ -1,0 +1,11 @@
+def is_default_ignorable(ch):
+		return (ch in [0x00AD, 0x034F, 0x061C, 0xFEFF] or
+			ch >= 0x17B4 and ch <= 0x17B5 or
+			ch >= 0x180B and ch <= 0x180E or
+	  	ch >= 0x200B and ch <= 0x200F or
+			ch >= 0x202A and ch <= 0x202E or
+			ch >= 0x2060 and ch <= 0x206F or
+	  	ch >= 0xFE00 and ch <= 0xFE0F or
+			ch >= 0xFFF0 and ch <= 0xFFF8 or
+    	ch >= 0x1D173 and ch <= 0x1D17A or
+    	ch >= 0xE0000 and ch <= 0xE0FFF)

@@ -1,11 +1,21 @@
 # Indented lines are features
 
+	@BASES = [uni0061 uni0062 uni0063 uni0064 uni0065 uni0077 uni0078 uni0079 uni007A];
+	@LIGATURES = [glyph01 glyph02];
+	@MARKS = [uni0300 uni0301 uni0302];
+	@COMPONENT = [];
+
+	table GDEF {
+		GlyphClassDef @BASES, @LIGATURES, @MARKS, @COMPONENT;
+	} GDEF;
+
 	feature dlig {
 		sub uni0064 by uni0065;
 		sub uni0066 uni0069 by glyph01;
 	} dlig;
 
 	feature rlig {
+		lookupflag IgnoreMarks;
 		sub uni0079 [uni0077 uni0078] by glyph02;
 	} rlig;
 
@@ -20,3 +30,4 @@ abd:uni0061|uni0062|uni0064
 [+dlig]abd:uni0061|uni0062|uni0065
 [+dlig]ffiafi:uni0066|glyph01|uni0061|glyph01
 ywyxyz:glyph02|glyph02|uni0079|uni007A
+ỳwỳxyz:glyph02|glyph02|uni0079|uni007A
